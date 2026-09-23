@@ -1,22 +1,9 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konfirmasi Pembayaran - Panel Admin</title>
-</head>
-<body style="font-family: sans-serif; margin: 20px; line-height: 1.5;">
+@extends('layouts.app')
 
-    @include('partials.nav')
+@section('title', 'Konfirmasi Pembayaran - Panel Admin')
 
+@section('content')
     <h1>Konfirmasi Pembayaran</h1>
-
-    {{-- Notifikasi status berhasil update --}}
-    @if (session('status'))
-        <p style="color: green; background: #e8f5e9; padding: 10px; border-radius: 4px;">
-            {{ session('status') }}
-        </p>
-    @endif
 
     {{-- Tampilan tabel jika ada pembayaran yang menunggu --}}
     @if ($payments->isEmpty())
@@ -43,7 +30,7 @@
                             {{ $payment->order->schedule->route->arrivalAirport->city }}
                         </td>
                         <td>
-                            {{-- Form tunggal dengan 2 tombol pengirim nilai berbeda --}}
+                            {{-- Form tunggal dengan 2 tombol pengirim nilai status berbeda --}}
                             <form action="{{ route('payments.update', $payment) }}" method="POST" style="display:inline;">
                                 @csrf
                                 <button type="submit" name="status" value="lunas" style="background-color: #2e7d32; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 3px;">
@@ -59,6 +46,4 @@
             </tbody>
         </table>
     @endif
-
-</body>
-</html>
+@endsection
