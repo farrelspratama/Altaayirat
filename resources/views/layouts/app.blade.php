@@ -4,21 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Altaayirat')</title>
-</head>
-<body style="font-family: sans-serif; margin: 20px; line-height: 1.5;">
 
-    {{-- Navigasi global untuk seluruh halaman --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
+
     @include('partials.nav')
 
-    {{-- Flash message global jika ada session status --}}
     @if (session('status'))
-        <p style="color: green; background: #e8f5e9; padding: 10px; border-radius: 4px;">
-            {{ session('status') }}
-        </p>
+        <div class="max-w-5xl mx-auto px-4 mt-6">
+            <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg shadow-sm">
+                {{ session('status') }}
+            </div>
+        </div>
     @endif
 
-    {{-- Slot konten dinamis yang akan diisi oleh masing-masing view --}}
-    @yield('content')
+    <main class="max-w-5xl mx-auto px-4 py-8">
+        @yield('content')
+    </main>
 
 </body>
 </html>
