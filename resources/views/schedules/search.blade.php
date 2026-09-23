@@ -1,54 +1,46 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Cari Penerbangan - Altaayirat</title>
-</head>
-<body>
-    @include('partials.nav')
+@extends('layouts.app')
+
+@section('title', 'Cari Penerbangan')
+
+@section('content')
     <h1>Cari Penerbangan</h1>
 
-    {{-- Tampilkan pesan error validasi jika ada. $errors selalu tersedia
-         otomatis di semua Blade view, disuntikkan oleh Laravel. --}}
-    @if ($errors->any())
-        <div style="color: red;">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    {{-- Komponen error validasi yang sudah dipisah ke partials --}}
+    @include('partials.errors')
 
-    {{-- method GET (default form), jadi hasilnya berupa query string di URL --}}
     <form action="{{ route('schedules.results') }}" method="GET">
+        {{-- Bandara Asal --}}
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Bandara Asal:</label>
+            <select name="departure_airport_id" required style="width: 100%; max-width: 320px; padding: 6px;">
+                <option value="">-- Pilih Bandara Asal --</option>
+                @foreach ($airports as $airport)
+                    <option value="{{ $airport->id }}" {{ old('departure_airport_id', request('departure_airport_id')) == $airport->id ? 'selected' : '' }}>
+                        {{ $airport->city }} ({{ $airport->code }}) - {{ $airport->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
 
-        <label for="departure_airport_id">Dari:</label>
-        <select name="departure_airport_id" id="departure_airport_id" required>
-            <option value="">-- Pilih Bandara Asal --</option>
-            @foreach ($airports as $airport)
-                {{-- old() mengembalikan input sebelumnya jika validasi gagal,
-                     supaya user tidak perlu mengisi ulang dari nol --}}
-                <option value="{{ $airport->id }}" @selected(old('departure_airport_id') == $airport->id)>
-                    {{ $airport->city }} ({{ $airport->code }})
-                </option>
-            @endforeach
-        </select>
+        {{-- Bandara Tujuan --}}
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Bandara Tujuan:</label>
+            <select name="arrival_airport_id" required style="width: 100%; max-width: 320px; padding: 6px;">
+                <option value="">-- Pilih Bandara Tujuan --</option>
+                @foreach ($airports as $airport)
+                    <option value="{{ $airport->id }}" {{ old('arrival_airport_id', request('arrival_airport_id')) == $airport->id ? 'selected' : '' }}>
+                        {{ $airport->city }} ({{ $airport->code }}) - {{ $airport->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
 
-        <label for="arrival_airport_id">Ke:</label>
-        <select name="arrival_airport_id" id="arrival_airport_id" required>
-            <option value="">-- Pilih Bandara Tujuan --</option>
-            @foreach ($airports as $airport)
-                <option value="{{ $airport->id }}" @selected(old('arrival_airport_id') == $airport->id)>
-                    {{ $airport->city }} ({{ $airport->code }})
-                </option>
-            @endforeach
-        </select>
+        {{-- Tanggal Keberangkatan --}}
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Tanggal Keberangkatan:</label>
+            <input type="date" name="date" value="{{ old('date', request('date')) }}" required style="width: 100%; max-width: 320px; padding: 6px;">
+        </div>
 
-        <label for="date">Tanggal:</label>
-        <input type="date" name="date" id="date" value="{{ old('date') }}" required>
-
-        <button type="submit">Cari</button>
+        <button type="submit" style="padding: 8px 16px; cursor: pointer;">Cari Jadwal</button>
     </form>
-</body>
-</html>
+@endsection

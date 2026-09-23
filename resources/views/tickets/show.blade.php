@@ -1,14 +1,8 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Tiket - {{ $order->payment->ticket->ticket_code }}</title>
-</head>
-<body style="font-family: sans-serif; margin: 20px; line-height: 1.5;">
+@extends('layouts.app')
 
-    @include('partials.nav')
+@section('title', 'E-Tiket - ' . $order->payment->ticket->ticket_code)
 
+@section('content')
     <div style="border: 2px solid #333; padding: 25px; max-width: 500px; margin: 20px 0; border-radius: 6px;">
         <h1 style="margin-top: 0; text-transform: uppercase; letter-spacing: 1px;">E-Tiket</h1>
         
@@ -50,6 +44,4 @@
         <button onclick="window.print()" style="padding: 8px 16px; cursor: pointer;">Cetak E-Tiket</button>
         <a href="{{ route('orders.show', $order) }}" style="margin-left: 10px;">Kembali ke Status Pesanan</a>
     </div>
-
-</body>
-</html>
+@endsection

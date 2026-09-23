@@ -1,35 +1,30 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Hasil Pencarian - Altaayirat</title>
-</head>
-<body>
-    @include('partials.nav')
+@extends('layouts.app')
+
+@section('title', 'Hasil Pencarian - Altaayirat')
+
+@section('content')
     <h1>Hasil Pencarian Penerbangan</h1>
+    
     <p><a href="{{ route('schedules.search') }}">&larr; Cari lagi</a></p>
 
-    {{-- $schedules->isEmpty() mengecek apakah Collection kosong -
-         menggantikan pengecekan manual mysqli_num_rows() == 0 di versi lama --}}
+    {{-- $schedules->isEmpty() mengecek apakah Collection kosong --}}
     @if ($schedules->isEmpty())
         <p>Tidak ada penerbangan yang ditemukan untuk pencarian ini.</p>
     @else
-        <table border="1" cellpadding="8">
+        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
             <thead>
-                <tr>
+                <tr style="background-color: #f2f2f2; text-align: left;">
                     <th>Maskapai</th>
                     <th>Pesawat</th>
                     <th>Rute</th>
                     <th>Berangkat</th>
                     <th>Tiba</th>
                     <th>Harga</th>
-                    <th></th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                {{-- Karena relasi sudah di-eager load lewat with() di Controller,
-                     setiap pemanggilan $schedule->route, $schedule->plane->airline
-                     di sini TIDAK memicu query baru ke database. --}}
+                {{-- Eager loading relasi dari controller mencegah N+1 query problem --}}
                 @foreach ($schedules as $schedule)
                     <tr>
                         <td>{{ $schedule->plane->airline->name }}</td>
@@ -39,13 +34,10 @@
                             &rarr;
                             {{ $schedule->route->arrivalAirport->city }}
                         </td>
-                        <td>{{ $schedule->departure->format('d M Y, H:i') }}</td>
-                        <td>{{ $schedule->arrival->format('H:i') }}</td>
+                        <td>{{ $schedule->departure->format('d M Y, H:i') }} WIB</td>
+                        <td>{{ $schedule->arrival->format('H:i') }} WIB</td>
                         <td>Rp {{ number_format($schedule->ticket_price, 0, ',', '.') }}</td>
                         <td>
-                            {{-- Route 'schedules.book' belum kita buat - ini
-                                 tujuan langkah SELANJUTNYA setelah ini (fitur
-                                 pemilihan kursi & pemesanan) --}}
                             <a href="{{ route('orders.create', $schedule) }}">Pesan</a>
                         </td>
                     </tr>
@@ -53,5 +45,4 @@
             </tbody>
         </table>
     @endif
-</body>
-</html>
+@endsection

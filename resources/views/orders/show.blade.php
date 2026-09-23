@@ -1,21 +1,9 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Pesanan #{{ $order->id }}</title>
-</head>
-<body style="font-family: sans-serif; margin: 20px; line-height: 1.6;">
-    @include('partials.nav')
+@extends('layouts.app')
 
+@section('title', 'Detail Pesanan #' . $order->id . ' - Altaayirat')
+
+@section('content')
     <h1>Status Pesanan #{{ $order->id }}</h1>
-
-    {{-- Notifikasi Flash Message --}}
-    @if (session('status'))
-        <p style="color: green; font-weight: bold; background: #e8f5e9; padding: 10px; border-radius: 4px;">
-            {{ session('status') }}
-        </p>
-    @endif
 
     {{-- Detail Penerbangan --}}
     <h3>Detail Penerbangan</h3>
@@ -25,7 +13,7 @@
     </p>
     <p>
         <strong>Jadwal & Maskapai:</strong>
-        {{ $order->schedule->departure->format('d M Y, H:i') }} - {{ $order->schedule->plane->airline->name }}
+        {{ $order->schedule->departure->format('d M Y, H:i') }} WIB - {{ $order->schedule->plane->airline->name }}
     </p>
     <p>
         <strong>Nomor Kursi:</strong>
@@ -62,6 +50,4 @@
             </p>
         @endif
     </div>
-
-</body>
-</html>
+@endsection
