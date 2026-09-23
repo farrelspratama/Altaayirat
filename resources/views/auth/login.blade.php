@@ -3,26 +3,31 @@
 @section('title', 'Login - Altaayirat')
 
 @section('content')
-    <h1>Login</h1>
+    <div class="max-w-sm mx-auto bg-white p-8 rounded-lg shadow-sm border border-slate-200">
+        <h1 class="text-xl font-semibold text-slate-800 mb-6 text-center">Login</h1>
 
-    {{-- Komponen error validasi terpusat --}}
-    @include('partials.errors')
+        @include('partials.errors')
 
-    <form action="{{ route('auth.login') }}" method="POST">
-        @csrf
+        <form action="{{ route('auth.login') }}" method="POST">
+            @csrf
 
-        <div style="margin-bottom: 15px;">
-            <label for="email" style="display: block; font-weight: bold; margin-bottom: 5px;">Email:</label>
-            <input type="email" name="email" id="email" value="{{ old('email') }}" required style="width: 100%; max-width: 320px; padding: 6px;">
-        </div>
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                <input type="email" name="email" id="email" value="{{ old('email') }}" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" required>
+            </div>
 
-        <div style="margin-bottom: 20px;">
-            <label for="password" style="display: block; font-weight: bold; margin-bottom: 5px;">Password:</label>
-            <input type="password" name="password" id="password" required style="width: 100%; max-width: 320px; padding: 6px;">
-        </div>
+            <div class="mb-6">
+                <label for="password" class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                <input type="password" name="password" id="password" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" required>
+            </div>
 
-        <button type="submit" style="padding: 8px 16px; cursor: pointer;">Login</button>
-    </form>
+            <button type="submit" class="w-full bg-sky-600 text-white font-medium py-2 rounded-md hover:bg-sky-700 cursor-pointer transition">
+                Login
+            </button>
+        </form>
 
-    <p style="margin-top: 15px;">Belum punya akun? <a href="{{ route('auth.register.form') }}">Daftar di sini</a></p>
+        <p class="mt-4 text-sm text-slate-600 text-center">
+            Belum punya akun? <a href="{{ route('auth.register.form') }}" class="text-sky-600 hover:underline">Daftar di sini</a>
+        </p>
+    </div>
 @endsection
