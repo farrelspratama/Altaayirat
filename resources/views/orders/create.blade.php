@@ -3,60 +3,128 @@
 @section('title', 'Pilih Kursi & Isi Data Penumpang')
 
 @section('content')
-    <h1>Pilih Kursi & Isi Data Penumpang</h1>
-    <p>{{ $schedule->route->departureAirport->city }} &rarr; {{ $schedule->route->arrivalAirport->city }}</p>
-    <p>{{ $schedule->departure->format('d M Y, H:i') }} - {{ $schedule->plane->airline->name }}</p>
+    <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-sm border border-slate-200">
+        {{-- Header & Ringkasan Jadwal --}}
+        <h1 class="text-xl font-semibold text-slate-800 mb-1">Pilih Kursi & Data Penumpang</h1>
+        <p class="text-sm text-slate-500 mb-6">
+            {{ $schedule->route->departureAirport->city }} &rarr; {{ $schedule->route->arrivalAirport->city }} &bull;
+            {{ $schedule->departure->format('d M Y, H:i') }} WIB &bull;
+            {{ $schedule->plane->airline->name }}
+        </p>
 
-    {{-- Komponen error validasi terpusat --}}
-    @include('partials.errors')
+        {{-- Komponen error validasi terpusat --}}
+        @include('partials.errors')
 
-    <form action="{{ route('orders.store', $schedule) }}" method="POST">
-        @csrf
+        <form action="{{ route('orders.store', $schedule) }}" method="POST">
+            @csrf
 
-        <h3>Pilih Kursi:</h3>
-        @foreach ($seats as $seat)
-            <label>
-                <input type="radio" name="seat_id" value="{{ $seat->id }}" @disabled($seat->status !== 'tersedia')>
-                {{ $seat->seat_number }} ({{ $seat->flightClass->name }})
-                @if ($seat->status !== 'tersedia')
-                    - <span style="color: red;">Sudah dipesan</span>
-                @endif
-            </label><br>
-        @endforeach
+            {{-- Bagian Pemilihan Kursi --}}
+            <div class="mb-6">
+                <h3 class="text-sm font-medium text-slate-700 mb-2">Pilih Kursi</h3>
 
-        <h3 style="margin-top: 25px;">Data Penumpang:</h3>
+                {{-- Legenda Status Warna Kursi --}}
+                <div class="flex items-center gap-4 text-xs text-slate-500 mb-4">
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-3.5 h-3.5 rounded-sm border border-slate-300 bg-white"></span>
+                        Tersedia
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-3.5 h-3.5 rounded-sm bg-sky-600"></span>
+                        Dipilih
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-3.5 h-3.5 rounded-sm bg-slate-100 border border-slate-200"></span>
+                        Sudah dipesan
+                    </span>
+                </div>
 
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Nama Lengkap:</label>
-            <input type="text" name="full_name" placeholder="Contoh: Budi Santoso" value="{{ old('full_name') }}" required style="width: 100%; max-width: 300px; padding: 6px;">
-            <br>
-            <small style="color: gray;">* Harap isi dengan nama depan dan nama belakang sesuai KTP/identitas.</small>
-        </div>
+                {{-- Pengelompokan Kursi Berdasarkan Kelas --}}
+                @foreach ($seats->groupBy(fn($seat) => $seat->flightClass->name) as $className => $seatsInClass)
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                        Kelas {{ $className }}
+                    </p>
 
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 5px;">No. HP:</label>
-            <input type="text" name="phone_number" placeholder="Contoh: 08123456789" value="{{ old('phone_number') }}" required style="width: 100%; max-width: 300px; padding: 6px;">
-        </div>
+                    <div class="grid grid-cols-4 sm:grid-cols-6 gap-2 mb-6">
+                        @foreach ($seatsInClass as $seat)
+                            <label class="relative block">
+                                {{-- Radio tersembunyi dengan penanda 'peer' --}}
+                                <input type="radio" name="seat_id" value="{{ $seat->id }}" class="peer sr-only"
+                                    @disabled($seat->status !== 'tersedia') @checked(old('seat_id') == $seat->id) required>
 
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Email:</label>
-            <input type="email" name="email" placeholder="contoh@email.com" value="{{ old('email') }}" required style="width: 100%; max-width: 300px; padding: 6px;">
-        </div>
+                                {{-- Kotak visual yang bereaksi terhadap state 'peer' --}}
+                                <div
+                                    class="cursor-pointer select-none rounded-md border border-slate-300 text-center py-2 text-sm font-medium text-slate-700 
+                                                hover:border-sky-400 transition
+                                                peer-checked:bg-sky-600 peer-checked:text-white peer-checked:border-sky-600 peer-checked:shadow-sm
+                                                peer-disabled:bg-slate-100 peer-disabled:text-slate-400 peer-disabled:cursor-not-allowed peer-disabled:border-slate-200">
+                                    {{ $seat->seat_number }}
+                                </div>
+                            </label>
+                        @endforeach
+                    </div>
+                @endforeach
+            </div>
 
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Tanggal Lahir:</label>
-            <input type="date" name="birth_date" value="{{ old('birth_date') }}" required style="width: 100%; max-width: 300px; padding: 6px;">
-        </div>
+            <hr class="border-slate-200 my-6">
+            
+            {{-- Bagian Data Penumpang --}}
+            <h3 class="text-sm font-medium text-slate-700 mb-2">Data Penumpang</h3>
 
-        <div style="margin-bottom: 20px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Jenis Kelamin:</label>
-            <select name="gender" required style="width: 100%; max-width: 300px; padding: 6px;">
-                <option value="">-- Pilih Jenis Kelamin --</option>
-                <option value="L" {{ old('gender') == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                <option value="P" {{ old('gender') == 'P' ? 'selected' : '' }}>Perempuan</option>
-            </select>
-        </div>
+            {{-- Nama Lengkap --}}
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Nama Lengkap</label>
+                <input type="text" name="full_name" value="{{ old('full_name') }}" placeholder="Contoh: Budi Santoso"
+                    class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                    required>
+                <p class="mt-1 text-xs text-slate-500">
+                    * Harap isi dengan nama depan dan belakang sesuai KTP/identitas.
+                </p>
+            </div>
 
-        <button type="submit" style="padding: 10px 20px; cursor: pointer;">Konfirmasi Pesan</button>
-    </form>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                {{-- Nomor HP --}}
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Nomor HP</label>
+                    <input type="text" name="phone_number" value="{{ old('phone_number') }}"
+                        placeholder="Contoh: 08123456789"
+                        class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                        required>
+                </div>
+
+                {{-- Email --}}
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                    <input type="email" name="email" value="{{ old('email') }}" placeholder="contoh@email.com"
+                        class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                        required>
+                </div>
+
+                {{-- Tanggal Lahir --}}
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal Lahir</label>
+                    <input type="date" name="birth_date" value="{{ old('birth_date') }}"
+                        class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                        required>
+                </div>
+
+                {{-- Jenis Kelamin --}}
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Jenis Kelamin</label>
+                    <select name="gender"
+                        class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                        required>
+                        <option value="">-- Pilih Jenis Kelamin --</option>
+                        <option value="L" @selected(old('gender') == 'L')>Laki-laki</option>
+                        <option value="P" @selected(old('gender') == 'P')>Perempuan</option>
+                    </select>
+                </div>
+            </div>
+
+            {{-- Tombol Konfirmasi --}}
+            <button type="submit"
+                class="w-full bg-sky-600 text-white font-medium py-2 rounded-md hover:bg-sky-700 transition">
+                Konfirmasi Pesan
+            </button>
+        </form>
+    </div>
 @endsection
