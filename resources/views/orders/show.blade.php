@@ -3,51 +3,73 @@
 @section('title', 'Detail Pesanan #' . $order->id . ' - Altaayirat')
 
 @section('content')
-    <h1>Status Pesanan #{{ $order->id }}</h1>
+    <div class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-sm border border-slate-200">
+        {{-- Header Pesanan --}}
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-xl font-semibold text-slate-800">Pesanan #{{ $order->id }}</h1>
+            <a href="{{ route('schedules.search') }}" class="text-xs text-sky-600 hover:underline">
+                &larr; Beranda
+            </a>
+        </div>
 
-    {{-- Detail Penerbangan --}}
-    <h3>Detail Penerbangan</h3>
-    <p>
-        <strong>Rute:</strong>
-        {{ $order->schedule->route->departureAirport->city }} &rarr; {{ $order->schedule->route->arrivalAirport->city }}
-    </p>
-    <p>
-        <strong>Jadwal & Maskapai:</strong>
-        {{ $order->schedule->departure->format('d M Y, H:i') }} WIB - {{ $order->schedule->plane->airline->name }}
-    </p>
-    <p>
-        <strong>Nomor Kursi:</strong>
-        {{ $order->seat->seat_number }} ({{ $order->seat->flightClass->name }})
-    </p>
-
-    <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
-
-    {{-- Data Penumpang --}}
-    <h3>Data Penumpang</h3>
-    <p>
-        <strong>Nama:</strong> {{ $order->passenger->full_name }}<br>
-        <strong>Kontak:</strong> {{ $order->passenger->phone_number }}
-    </p>
-
-    <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
-
-    {{-- Status Pembayaran --}}
-    <h3>Status Pembayaran</h3>
-    <div>
-        @if ($order->payment->status === 'lunas')
-            <strong style="color: green;">LUNAS</strong> 
-            @if (Route::has('tickets.show'))
-                - <a href="{{ route('tickets.show', $order) }}">Lihat E-Tiket</a>
-            @else
-                - <span>(E-Tiket segera tersedia)</span>
-            @endif
-        @elseif ($order->payment->status === 'ditolak')
-            <strong style="color: red;">DITOLAK</strong>
-        @else
-            <strong style="color: orange;">MENUNGGU KONFIRMASI</strong>
-            <p style="color: #555; margin-top: 5px;">
-                Silakan lakukan pembayaran manual, admin akan mengonfirmasi setelah dana diterima.
+        {{-- Detail Penerbangan --}}
+        <div class="space-y-1 text-sm text-slate-600 mb-6 pb-6 border-b border-slate-100">
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Detail Penerbangan</p>
+            <p class="font-medium text-slate-800 text-base">
+                {{ $order->schedule->route->departureAirport->city }} &rarr; {{ $order->schedule->route->arrivalAirport->city }}
             </p>
-        @endif
+            <p>{{ $order->schedule->departure->format('d M Y, H:i') }} WIB &bull; {{ $order->schedule->plane->airline->name }}</p>
+            <p>Kursi {{ $order->seat->seat_number }} ({{ $order->seat->flightClass->name }})</p>
+        </div>
+
+        {{-- Data Penumpang --}}
+        <div class="text-sm text-slate-600 mb-6 pb-6 border-b border-slate-100 space-y-1">
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Data Penumpang</p>
+            <p class="font-medium text-slate-800">{{ $order->passenger->full_name }}</p>
+            <p>{{ $order->passenger->phone_number }}</p>
+        </div>
+
+        {{-- Logika Penentuan Badge Status Pembayaran --}}
+        @php
+            $statusStyle = match ($order->payment->status) {
+                'lunas' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                'ditolak' => 'bg-red-50 text-red-700 border-red-200',
+                default => 'bg-amber-50 text-amber-700 border-amber-200',
+            };
+
+            $statusLabel = match ($order->payment->status) {
+                'lunas' => 'Lunas',
+                'ditolak' => 'Ditolak',
+                default => 'Menunggu Konfirmasi',
+            };
+        @endphp
+
+        {{-- Status Pembayaran & Aksi --}}
+        <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Status Pembayaran</p>
+            
+            <span class="inline-block px-3 py-1 rounded-full text-xs font-medium border {{ $statusStyle }}">
+                {{ $statusLabel }}
+            </span>
+
+            @if ($order->payment->status === 'lunas')
+                @if (Route::has('tickets.show'))
+                    <a href="{{ route('tickets.show', $order) }}" 
+                       class="block mt-4 text-center bg-sky-600 text-white font-medium py-2 rounded-md hover:bg-sky-700 transition shadow-sm">
+                        Lihat E-Tiket
+                    </a>
+                @else
+                    <p class="text-xs text-slate-400 italic mt-3">E-Tiket segera tersedia.</p>
+                @endif
+            @elseif ($order->payment->status === 'menunggu_konfirmasi')
+                <div class="mt-4 rounded-md bg-slate-50 border border-slate-200 p-3 text-xs text-slate-500">
+                    Silakan lakukan pembayaran manual, staff akan mengonfirmasi pesanan setelah dana diterima.
+                </div>
+            @elseif ($order->payment->status === 'ditolak')
+                <div class="mt-4 rounded-md bg-red-50/50 border border-red-200 p-3 text-xs text-red-600">
+                    Pembayaran tidak dapat diverifikasi atau telah dibatalkan.
+                </div>
+            @endif
+        </div>
     </div>
 @endsection
