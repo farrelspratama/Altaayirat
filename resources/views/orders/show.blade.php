@@ -29,27 +29,12 @@
             <p>{{ $order->passenger->phone_number }}</p>
         </div>
 
-        {{-- Logika Penentuan Badge Status Pembayaran --}}
-        @php
-            $statusStyle = match ($order->payment->status) {
-                'lunas' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                'ditolak' => 'bg-red-50 text-red-700 border-red-200',
-                default => 'bg-amber-50 text-amber-700 border-amber-200',
-            };
-
-            $statusLabel = match ($order->payment->status) {
-                'lunas' => 'Lunas',
-                'ditolak' => 'Ditolak',
-                default => 'Menunggu Konfirmasi',
-            };
-        @endphp
-
         {{-- Status Pembayaran & Aksi --}}
         <div>
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Status Pembayaran</p>
             
-            <span class="inline-block px-3 py-1 rounded-full text-xs font-medium border {{ $statusStyle }}">
-                {{ $statusLabel }}
+            <span class="inline-block px-3 py-1 rounded-full text-xs font-medium border {{ $order->payment->status_badge_classes }}"> 
+                {{ $order->payment->status_label }} 
             </span>
 
             @if ($order->payment->status === 'lunas')

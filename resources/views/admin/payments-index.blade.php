@@ -3,47 +3,62 @@
 @section('title', 'Konfirmasi Pembayaran - Panel Admin')
 
 @section('content')
-    <h1>Konfirmasi Pembayaran</h1>
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-xl font-semibold text-slate-800 mb-6">Konfirmasi Pembayaran</h1>
 
-    {{-- Tampilan tabel jika ada pembayaran yang menunggu --}}
-    @if ($payments->isEmpty())
-        <p>Tidak ada pembayaran yang menunggu konfirmasi.</p>
-    @else
-        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 900px;">
-            <thead>
-                <tr style="background-color: #f2f2f2; text-align: left;">
-                    <th>Order ID</th>
-                    <th>User</th>
-                    <th>Penumpang</th>
-                    <th>Rute</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($payments as $payment)
-                    <tr>
-                        <td>#{{ $payment->order->id }}</td>
-                        <td>{{ $payment->order->user->name }}</td>
-                        <td>{{ $payment->order->passenger->full_name }}</td>
-                        <td>
-                            {{ $payment->order->schedule->route->departureAirport->city }} &rarr; 
-                            {{ $payment->order->schedule->route->arrivalAirport->city }}
-                        </td>
-                        <td>
-                            {{-- Form tunggal dengan 2 tombol pengirim nilai status berbeda --}}
-                            <form action="{{ route('payments.update', $payment) }}" method="POST" style="display:inline;">
-                                @csrf
-                                <button type="submit" name="status" value="lunas" style="background-color: #2e7d32; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 3px;">
-                                    Setujui
-                                </button>
-                                <button type="submit" name="status" value="ditolak" style="background-color: #c62828; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 3px;" onclick="return confirm('Apakah Anda yakin ingin menolak pembayaran ini?');">
-                                    Tolak
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @endif
+        @if ($payments->isEmpty())
+            <div class="bg-white rounded-lg border border-slate-200 p-8 text-center text-slate-500 shadow-sm">
+                Tidak ada pembayaran yang menunggu konfirmasi.
+            </div>
+        @else
+            <div class="bg-white rounded-lg border border-slate-200 overflow-x-auto shadow-sm">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-50 text-xs uppercase text-slate-500">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Order</th>
+                            <th class="px-4 py-3 text-left">User</th>
+                            <th class="px-4 py-3 text-left">Penumpang</th>
+                            <th class="px-4 py-3 text-left">Rute</th>
+                            <th class="px-4 py-3 text-left">Status</th>
+                            <th class="px-4 py-3 text-right"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @foreach ($payments as $payment)
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="px-4 py-3 font-medium text-slate-800">
+                                    #{{ $payment->order->id }}
+                                </td>
+                                <td class="px-4 py-3 text-slate-600">
+                                    {{ $payment->order->user->name }}
+                                </td>
+                                <td class="px-4 py-3 text-slate-600">
+                                    {{ $payment->order->passenger->full_name }}
+                                </td>
+                                <td class="px-4 py-3 text-slate-600 whitespace-nowrap">
+                                    {{ $payment->order->schedule->route->departureAirport->city }} &rarr; {{ $payment->order->schedule->route->arrivalAirport->city }}
+                                </td>
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    <span class="inline-block px-3 py-1 rounded-full text-xs font-medium border {{ $payment->status_badge_classes }}">
+                                        {{ $payment->status_label }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-right whitespace-nowrap">
+                                    <form action="{{ route('payments.update', $payment) }}" method="POST" class="inline-flex gap-2">
+                                        @csrf
+                                        <button type="submit" name="status" value="lunas" class="bg-green-600 text-white text-xs font-medium px-3 py-1.5 rounded-md hover:bg-green-700 transition cursor-pointer">
+                                            Setujui
+                                        </button>
+                                        <button type="submit" name="status" value="ditolak" class="border border-red-300 text-red-600 text-xs font-medium px-3 py-1.5 rounded-md hover:bg-red-50 transition cursor-pointer">
+                                            Tolak
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+    </div>
 @endsection
