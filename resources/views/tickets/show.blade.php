@@ -3,45 +3,77 @@
 @section('title', 'E-Tiket - ' . $order->payment->ticket->ticket_code)
 
 @section('content')
-    <div style="border: 2px solid #333; padding: 25px; max-width: 500px; margin: 20px 0; border-radius: 6px;">
-        <h1 style="margin-top: 0; text-transform: uppercase; letter-spacing: 1px;">E-Tiket</h1>
-        
-        <p style="font-size: 16px;">
-            Kode Tiket: <strong style="font-size: 18px; color: #1a237e;">{{ $order->payment->ticket->ticket_code }}</strong>
-        </p>
+    <div class="max-w-md mx-auto">
+        {{-- Card Boarding Pass --}}
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+            {{-- Header Berwarna (Kop Tiket) --}}
+            <div class="bg-sky-600 text-white px-6 py-5">
+                <div class="flex items-center justify-between">
+                    <p class="text-xs uppercase tracking-wide text-sky-100">E-Tiket Boarding Pass</p>
+                    <span class="text-xs font-medium bg-sky-700/60 px-2 py-0.5 rounded text-sky-100">
+                        {{ $order->schedule->plane->name }}
+                    </span>
+                </div>
+                <p class="text-lg font-semibold mt-1">{{ $order->schedule->plane->airline->name }}</p>
+                <p class="text-sm font-mono text-sky-100 mt-1 tracking-wider">
+                    {{ $order->payment->ticket->ticket_code }}
+                </p>
+            </div>
 
-        <hr style="border: none; border-top: 1px solid #ccc; margin: 15px 0;">
+            {{-- Efek Sobekan Tiket (Garis Putus-Putus) --}}
+            <div class="border-t-2 border-dashed border-slate-200"></div>
 
-        <p style="margin: 5px 0;">
-            <small style="color: #666;">Nama Penumpang:</small><br>
-            <strong style="font-size: 16px;">{{ $order->passenger->full_name }}</strong>
-        </p>
+            {{-- Body Tiket --}}
+            <div class="p-6 space-y-4">
+                {{-- Data Penumpang --}}
+                <div>
+                    <p class="text-xs text-slate-500 uppercase tracking-wider">Penumpang</p>
+                    <p class="font-medium text-slate-800 text-base">{{ $order->passenger->full_name }}</p>
+                </div>
 
-        <p style="margin: 10px 0;">
-            <small style="color: #666;">Rute Penerbangan:</small><br>
-            <strong>{{ $order->schedule->route->departureAirport->city }} ({{ $order->schedule->route->departureAirport->code }})</strong>
-            &rarr;
-            <strong>{{ $order->schedule->route->arrivalAirport->city }} ({{ $order->schedule->route->arrivalAirport->code }})</strong>
-        </p>
+                {{-- Rute Asal -> Tujuan --}}
+                <div class="flex items-center justify-between py-2">
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase tracking-wider">Dari</p>
+                        <p class="text-2xl font-bold text-slate-800">{{ $order->schedule->route->departureAirport->code }}</p>
+                        <p class="text-xs text-slate-500">{{ $order->schedule->route->departureAirport->city }}</p>
+                    </div>
 
-        <p style="margin: 10px 0;">
-            <small style="color: #666;">Waktu Keberangkatan:</small><br>
-            <strong>{{ $order->schedule->departure->format('d M Y, H:i') }} WIB</strong>
-        </p>
+                    <span class="text-slate-300 text-xl font-light">&rarr;</span>
 
-        <p style="margin: 10px 0;">
-            <small style="color: #666;">Pesawat & Maskapai:</small><br>
-            {{ $order->schedule->plane->airline->name }} - {{ $order->schedule->plane->name }}
-        </p>
+                    <div class="text-right">
+                        <p class="text-xs text-slate-500 uppercase tracking-wider">Ke</p>
+                        <p class="text-2xl font-bold text-slate-800">{{ $order->schedule->route->arrivalAirport->code }}</p>
+                        <p class="text-xs text-slate-500">{{ $order->schedule->route->arrivalAirport->city }}</p>
+                    </div>
+                </div>
 
-        <p style="margin: 10px 0;">
-            <small style="color: #666;">Nomor Kursi & Kelas:</small><br>
-            <strong>Kursi {{ $order->seat->seat_number }}</strong> ({{ $order->seat->flightClass->name }})
-        </p>
-    </div>
+                {{-- Grid Detail: Tanggal & Nomor Kursi --}}
+                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase tracking-wider">Tanggal & Jam</p>
+                        <p class="font-medium text-slate-800">{{ $order->schedule->departure->format('d M Y, H:i') }} WIB</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase tracking-wider">Kursi</p>
+                        <p class="font-medium text-slate-800">
+                            Kursi {{ $order->seat->seat_number }} 
+                            <span class="text-xs text-slate-500 font-normal">({{ $order->seat->flightClass->name }})</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div>
-        <button onclick="window.print()" style="padding: 8px 16px; cursor: pointer;">Cetak E-Tiket</button>
-        <a href="{{ route('orders.show', $order) }}" style="margin-left: 10px;">Kembali ke Status Pesanan</a>
+        {{-- Aksi: Cetak & Kembali (Disembunyikan saat mode Print kertas) --}}
+        <div class="flex items-center justify-between gap-4 print:hidden">
+            <a href="{{ route('orders.show', $order) }}" class="text-sm font-medium text-slate-600 hover:text-slate-800 transition">
+                &larr; Status Pesanan
+            </a>
+            <button onclick="window.print()" 
+                class="bg-sky-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-sky-700 cursor-pointer transition shadow-sm">
+                Cetak E-Tiket
+            </button>
+        </div>
     </div>
 @endsection
