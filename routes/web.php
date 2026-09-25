@@ -5,6 +5,7 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\AirlineController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
@@ -64,4 +65,5 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'staff'])->prefix('admin')->group(function () {
     Route::get('/konfirmasi', [PaymentController::class, 'index'])->name('payments.index');
     Route::post('/konfirmasi/{payment}', [PaymentController::class, 'update'])->name('payments.update');
+    Route::resource('airlines', AirlineController::class)->except(['show']);
 });
