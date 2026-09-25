@@ -13,6 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias(['staff' => \App\Http\Middleware\EnsureUserIsStaff::class,]);
+
+        $middleware->redirectGuestsTo(fn () => route('auth.login.form'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
