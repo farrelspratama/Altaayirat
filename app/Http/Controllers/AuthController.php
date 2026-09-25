@@ -61,6 +61,13 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
+            $user = Auth::user();
+
+            if (in_array($user->role, ['admin', 'penjual'])) {
+                return redirect()->route('payments.index')
+                    ->with('status', 'Selamat datang kembali, ' . $user->name . '.');
+            }
+            
             return redirect()->intended(route('schedules.search'))
                 ->with('status', 'Berhasil login.');
         }

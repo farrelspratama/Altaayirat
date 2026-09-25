@@ -9,14 +9,14 @@
         <div class="flex items-center gap-4 text-sm">
             @auth
                 
-                @if (Auth::user()->role === 'staff')
+                @if (in_array(Auth::user()->role, ['admin', 'penjual']))
                     <a href="{{ route('payments.index') }}" class="text-slate-600 hover:text-sky-600 font-medium transition">
-                        Konfirmasi Pembayaran
+                        Panel Admin
                     </a>
                 @endif
 
                 <span class="text-slate-600">
-                    Halo, <span class="font-medium text-slate-800">{{ Auth::user()->name }}</span>
+                    Halo, <strong>{{ Auth::user()->name }}</strong>
                 </span>
 
                 <form action="{{ route('auth.logout') }}" method="POST" class="inline">
