@@ -25,6 +25,10 @@
                     <a href="{{ route('planes.index') }}" class="text-slate-600 hover:text-sky-600 font-medium transition">
                         Pesawat
                     </a>
+
+                    <a href="{{ route('routes.index') }}" class="text-slate-600 hover:text-sky-600 font-medium transition">
+                        Rute
+                    </a>
                 @endif
 
                 <span class="text-slate-600">
