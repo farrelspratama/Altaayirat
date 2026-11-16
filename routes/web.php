@@ -7,6 +7,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\AirlineController;
 use App\Http\Controllers\AirportController;
+use App\Http\Controllers\PlaneController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
@@ -68,4 +69,5 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->group(function () {
     Route::post('/konfirmasi/{payment}', [PaymentController::class, 'update'])->name('payments.update');
     Route::resource('airlines', AirlineController::class)->except(['show']);
     Route::resource('airports', AirportController::class)->except(['show']);
+    Route::resource('planes', PlaneController::class)->except(['show']);
 });

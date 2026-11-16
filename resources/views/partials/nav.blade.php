@@ -18,8 +18,12 @@
                         Maskapai
                     </a>
 
-                    <a href="{{ route('airports.index') }}" class="text-slate-600 hover:text-sky-600">
+                    <a href="{{ route('airports.index') }}" class="text-slate-600 hover:text-sky-600 font-medium transition">
                         Bandara
+                    </a>
+
+                    <a href="{{ route('planes.index') }}" class="text-slate-600 hover:text-sky-600 font-medium transition">
+                        Pesawat
                     </a>
                 @endif
 
