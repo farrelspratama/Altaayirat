@@ -9,6 +9,7 @@ use App\Http\Controllers\AirlineController;
 use App\Http\Controllers\AirportController;
 use App\Http\Controllers\PlaneController;
 use App\Http\Controllers\RouteController;
+use App\Http\Controllers\AdminScheduleController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
@@ -72,4 +73,5 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->group(function () {
     Route::resource('airports', AirportController::class)->except(['show']);
     Route::resource('planes', PlaneController::class)->except(['show']);
     Route::resource('routes', RouteController::class)->except(['show']);
+    Route::resource('schedules', AdminScheduleController::class)->except(['show']);
 });

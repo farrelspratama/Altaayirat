@@ -29,6 +29,10 @@
                     <a href="{{ route('routes.index') }}" class="text-slate-600 hover:text-sky-600 font-medium transition">
                         Rute
                     </a>
+
+                    <a href="{{ route('schedules.index') }}" class="text-slate-600 hover:text-sky-600 font-medium transition">
+                        Jadwal
+                    </a>
                 @endif
 
                 <span class="text-slate-600">
