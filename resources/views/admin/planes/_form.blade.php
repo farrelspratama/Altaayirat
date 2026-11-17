@@ -15,10 +15,6 @@
                    focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" required>
         <option value="">-- Pilih Maskapai --</option>
         @foreach ($airlines as $airline)
-            {{-- old('airline_id', $plane->airline_id ?? '') - pola SAMA seperti
-                 old('name', $airline->name ?? '') di form Airlines/Airports,
-                 hanya sekarang dipakai untuk mencocokkan option mana yang
-                 harus @selected, bukan mengisi value input teks. --}}
             <option value="{{ $airline->id }}"
                 @selected(old('airline_id', $plane->airline_id ?? '') == $airline->id)>
                 {{ $airline->name }}
@@ -34,6 +30,13 @@
            class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm
                   focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" required>
 </div>
+
+{{-- Jumlah kursi hanya diisi saat membuat pesawat baru. Di halaman edit
+     ($plane sudah ada) bagian ini disembunyikan, karena mengubah jumlah
+     kursi setelah ada pesanan berisiko merusak data order. --}}
+@unless (isset($plane))
+    @include('admin.planes._seat_fields')
+@endunless
 
 <button type="submit" class="bg-sky-600 text-white font-medium px-4 py-2 rounded-md hover:bg-sky-700 transition">
     Simpan

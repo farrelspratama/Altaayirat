@@ -71,6 +71,8 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->group(function () {
     Route::post('/konfirmasi/{payment}', [PaymentController::class, 'update'])->name('payments.update');
     Route::resource('airlines', AirlineController::class)->except(['show']);
     Route::resource('airports', AirportController::class)->except(['show']);
+    Route::get('planes/{plane}/seats', [PlaneController::class, 'seats'])->name('planes.seats');
+    Route::post('planes/{plane}/seats', [PlaneController::class, 'generateSeats'])->name('planes.seats.generate');
     Route::resource('planes', PlaneController::class)->except(['show']);
     Route::resource('routes', RouteController::class)->except(['show']);
     Route::resource('schedules', AdminScheduleController::class)->except(['show']);

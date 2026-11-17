@@ -18,12 +18,19 @@
         </div>
     @endif
 
+    @if ($errors->any())
+        <div class="mb-4 rounded-md bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3">
+            {{ $errors->first() }}
+        </div>
+    @endif
+
     <div class="bg-white rounded-lg border border-slate-200 overflow-x-auto">
         <table class="w-full text-sm">
             <thead class="bg-slate-50 text-xs uppercase text-slate-500">
                 <tr>
                     <th class="px-4 py-3 text-left">Nama Pesawat</th>
                     <th class="px-4 py-3 text-left">Maskapai</th>
+                    <th class="px-4 py-3 text-left">Kursi</th>
                     <th class="px-4 py-3"></th>
                 </tr>
             </thead>
@@ -32,6 +39,15 @@
                     <tr class="hover:bg-slate-50">
                         <td class="px-4 py-3 font-medium text-slate-800">{{ $plane->name }}</td>
                         <td class="px-4 py-3">{{ $plane->airline->name }}</td>
+                        <td class="px-4 py-3">
+                            <a href="{{ route('planes.seats', $plane) }}" class="text-sky-600 hover:underline">
+                                @if ($plane->seats_count > 0)
+                                    {{ $plane->seats_count }} kursi
+                                @else
+                                    <span class="text-amber-600">Belum ada kursi</span>
+                                @endif
+                            </a>
+                        </td>
                         <td class="px-4 py-3 text-right space-x-2">
                             <a href="{{ route('planes.edit', $plane) }}" class="text-sky-600 hover:underline text-xs font-medium">Edit</a>
                             <form action="{{ route('planes.destroy', $plane) }}" method="POST" class="inline"
