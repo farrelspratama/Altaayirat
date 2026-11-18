@@ -5,9 +5,9 @@
 @section('content')
     <div class="max-w-4xl mx-auto">
         <div class="flex items-center justify-between mb-6">
-            <h1 class="text-xl font-semibold text-slate-800">Kelola Bandara</h1>
+            <h1 class="text-xl font-semibold text-stone-800">Kelola Bandara</h1>
             <a href="{{ route('airports.create') }}"
-               class="bg-sky-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-sky-700 transition">
+               class="bg-brand-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-brand-700 transition">
                 + Tambah Bandara
             </a>
         </div>
@@ -24,9 +24,9 @@
             </div>
         @endif
 
-        <div class="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+        <div class="bg-white rounded-lg border border-stone-200 overflow-x-auto">
             <table class="w-full text-sm">
-                <thead class="bg-slate-50 text-xs uppercase text-slate-500">
+                <thead class="bg-stone-50 text-xs uppercase text-stone-500">
                     <tr>
                         <th class="px-4 py-3 text-left">Kode</th>
                         <th class="px-4 py-3 text-left">Kota</th>
@@ -35,15 +35,15 @@
                         <th class="px-4 py-3"></th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody class="divide-y divide-stone-100">
                     @foreach ($airports as $airport)
-                        <tr class="hover:bg-slate-50">
-                            <td class="px-4 py-3 font-medium text-slate-800">{{ $airport->code }}</td>
+                        <tr class="hover:bg-stone-50">
+                            <td class="px-4 py-3 font-medium text-stone-800">{{ $airport->code }}</td>
                             <td class="px-4 py-3">{{ $airport->city }}</td>
                             <td class="px-4 py-3">{{ $airport->country }}</td>
                             <td class="px-4 py-3">{{ $airport->name }}</td>
                             <td class="px-4 py-3 text-right space-x-2">
-                                <a href="{{ route('airports.edit', $airport) }}" class="text-sky-600 hover:underline text-xs font-medium">Edit</a>
+                                <a href="{{ route('airports.edit', $airport) }}" class="text-brand-600 hover:underline text-xs font-medium">Edit</a>
                                 <form action="{{ route('airports.destroy', $airport) }}" method="POST" class="inline"
                                       onsubmit="return confirm('Yakin hapus bandara ini?')">
                                     @csrf

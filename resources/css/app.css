@@ -4,6 +4,25 @@
 @source '../../storage/framework/views/*.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+  /* Font: Inter (dimuat di layout lewat fonts.bunny.net) */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* Warna utama: cokelat dari tema lama (#A7672D) */
+  --color-brand-50:  #f9f5f0;
+  --color-brand-100: #f4eae1;
+  --color-brand-200: #e9d5c3;
+  --color-brand-300: #d8b697;
+  --color-brand-400: #d29156;
+  --color-brand-500: #a7672d;   /* warna asli versi lama */
+  --color-brand-600: #995e29;   /* tombol utama (kontras 5.3:1 dgn putih) */
+  --color-brand-700: #7d4d22;
+  --color-brand-800: #603b1a;
+  --color-brand-900: #442a12;
+
+  /* Aksen kuning dari logo bulan sabit; dipakai hemat */
+  --color-accent: #facc15;
+  --color-accent-soft: #fef3c7;
+
+  /* Latar halaman: krem hangat, bukan putih murni */
+  --color-canvas: #fbf8f4;
 }

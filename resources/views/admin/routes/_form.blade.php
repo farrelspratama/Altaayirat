@@ -10,10 +10,10 @@
 
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
     <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Bandara Asal</label>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Bandara Asal</label>
         <select name="departure_airport_id"
-                class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm
-                       focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" required>
+                class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm
+                       focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500" required>
             <option value="">-- Pilih Bandara Asal --</option>
             @foreach ($airports as $airport)
                 <option value="{{ $airport->id }}"
@@ -25,14 +25,14 @@
     </div>
 
     <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Bandara Tujuan</label>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Bandara Tujuan</label>
         {{-- INI DUA dropdown yang sama persis isinya ($airports), beda cuma
              name dan variabel mana yang dicek @selected. Keduanya bukan dua
              sumber data terpisah - cukup satu query $airports yang dipakai
              dua kali dalam loop yang berbeda. --}}
         <select name="arrival_airport_id"
-                class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm
-                       focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" required>
+                class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm
+                       focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500" required>
             <option value="">-- Pilih Bandara Tujuan --</option>
             @foreach ($airports as $airport)
                 <option value="{{ $airport->id }}"
@@ -44,6 +44,6 @@
     </div>
 </div>
 
-<button type="submit" class="bg-sky-600 text-white font-medium px-4 py-2 rounded-md hover:bg-sky-700 transition">
+<button type="submit" class="bg-brand-600 text-white font-medium px-4 py-2 rounded-md hover:bg-brand-700 transition">
     Simpan
 </button>

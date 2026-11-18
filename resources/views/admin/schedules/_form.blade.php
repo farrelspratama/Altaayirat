@@ -10,10 +10,10 @@
 
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
     <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Rute</label>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Rute</label>
         <select name="route_id"
-                class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm
-                       focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" required>
+                class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm
+                       focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500" required>
             <option value="">-- Pilih Rute --</option>
             @foreach ($routes as $route)
                 <option value="{{ $route->id }}"
@@ -26,10 +26,10 @@
     </div>
 
     <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Pesawat</label>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Pesawat</label>
         <select name="plane_id"
-                class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm
-                       focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" required>
+                class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm
+                       focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500" required>
             <option value="">-- Pilih Pesawat --</option>
             @foreach ($planes as $plane)
                 <option value="{{ $plane->id }}"
@@ -41,32 +41,32 @@
     </div>
 
     <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Berangkat</label>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Berangkat</label>
         {{-- input datetime-local butuh format Y-m-d\TH:i, bukan format
              default Carbon, makanya nilai dari database diformat manual --}}
         <input type="datetime-local" name="departure"
                value="{{ old('departure', isset($schedule) ? $schedule->departure->format('Y-m-d\TH:i') : '') }}"
-               class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm
-                      focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" required>
+               class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm
+                      focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500" required>
     </div>
 
     <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Tiba</label>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Tiba</label>
         <input type="datetime-local" name="arrival"
                value="{{ old('arrival', isset($schedule) ? $schedule->arrival->format('Y-m-d\TH:i') : '') }}"
-               class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm
-                      focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" required>
+               class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm
+                      focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500" required>
     </div>
 
     <div class="sm:col-span-2">
-        <label class="block text-sm font-medium text-slate-700 mb-1">Harga Tiket (Rp)</label>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Harga Tiket (Rp)</label>
         <input type="number" name="ticket_price" min="0" step="1000"
                value="{{ old('ticket_price', isset($schedule) ? (int) $schedule->ticket_price : '') }}"
-               class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm
-                      focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" required>
+               class="w-full rounded-md border border-stone-300 px-3 py-2 text-sm
+                      focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500" required>
     </div>
 </div>
 
-<button type="submit" class="bg-sky-600 text-white font-medium px-4 py-2 rounded-md hover:bg-sky-700 transition">
+<button type="submit" class="bg-brand-600 text-white font-medium px-4 py-2 rounded-md hover:bg-brand-700 transition">
     Simpan
 </button>
