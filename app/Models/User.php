@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-// Illuminate\Foundation\Auth\User sudah menyertakan fitur bawaan Laravel
-// untuk autentikasi (login, password hashing check, dsb), jadi kita extend
-// dari situ, bukan dari Model biasa.
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    use Notifiable;
+
     // Kolom yang boleh diisi lewat mass assignment (misal User::create([...]))
     protected $fillable = [
         'name',

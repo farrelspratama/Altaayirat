@@ -29,5 +29,8 @@
         <p class="mt-4 text-sm text-stone-600 text-center">
             Belum punya akun? <a href="{{ route('auth.register.form') }}" class="text-brand-600 hover:underline">Daftar di sini</a>
         </p>
+        <p class="mt-2 text-sm text-center">
+            <a href="{{ route('password.request') }}" class="text-brand-600 hover:underline">Lupa password?</a>
+        </p>
     </div>
 @endsection

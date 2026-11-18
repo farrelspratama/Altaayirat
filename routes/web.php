@@ -10,6 +10,7 @@ use App\Http\Controllers\AirportController;
 use App\Http\Controllers\PlaneController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\AdminScheduleController;
+use App\Http\Controllers\PasswordResetController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'home')->name('home');
@@ -39,6 +40,11 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('auth.login.form');
     Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+
+    Route::get('/lupa-password', [PasswordResetController::class, 'request'])->name('password.request');
+    Route::post('/lupa-password', [PasswordResetController::class, 'update'])
+        ->middleware('throttle:5,1')
+        ->name('password.update');
 });
 
 /*
