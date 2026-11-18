@@ -50,9 +50,7 @@ class AdminScheduleController extends Controller
         // yang sudah punya pesanan akan ikut menghapus order, payment, dan
         // tiket milik user. Karena itu kita blokir di sini.
         if ($schedule->orders()->exists()) {
-            return back()->withErrors([
-                'schedule' => 'Jadwal ini sudah memiliki pesanan, tidak bisa dihapus.',
-            ]);
+            return back()->with('error', 'Jadwal ini sudah memiliki pesanan, tidak bisa dihapus.');
         }
 
         $schedule->delete();

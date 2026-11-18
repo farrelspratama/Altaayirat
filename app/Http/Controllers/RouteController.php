@@ -3,73 +3,69 @@
 namespace App\Http\Controllers;
 
 use App\Models\Airport;
-use App\Models\Route as FlightRoute;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class RouteController extends Controller
+class AirportController extends Controller
 {
     public function index(): View
     {
-        $routes = FlightRoute::with(['departureAirport', 'arrivalAirport'])->get();
+        $airports = Airport::orderBy('city')->get();
 
-        return view('admin.routes.index', compact('routes'));
+        return view('admin.airports.index', compact('airports'));
     }
 
     public function create(): View
     {
-        $airports = Airport::orderBy('city')->get();
-
-        return view('admin.routes.create', compact('airports'));
+        return view('admin.airports.create');
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'departure_airport_id' => ['required', 'exists:airports,id'],
-            // 'different:departure_airport_id' - ATURAN YANG SAMA PERSIS
-            // yang sudah kamu tulis dulu di SearchScheduleRequest untuk sisi
-            // user. Di sini perlu ditulis ULANG karena ini request yang
-            // berbeda (validasi inline di Controller, bukan Form Request
-            // terpisah) - aturan validasi tidak otomatis "dibagikan" antar
-            // tempat berbeda hanya karena nama field-nya sama.
-            'arrival_airport_id' => ['required', 'exists:airports,id', 'different:departure_airport_id'],
+            'code' => ['required', 'string', 'max:4', 'unique:airports,code'],
+            'country' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
         ]);
 
-        FlightRoute::create($validated);
+        Airport::create($validated);
 
-        return redirect()->route('routes.index')->with('status', 'Rute berhasil ditambahkan.');
+        return redirect()->route('airports.index')->with('status', 'Bandara berhasil ditambahkan.');
     }
 
-    public function edit(FlightRoute $route): View
+    public function edit(Airport $airport): View
     {
-        $airports = Airport::orderBy('city')->get();
-
-        return view('admin.routes.edit', compact('route', 'airports'));
+        return view('admin.airports.edit', compact('airport'));
     }
 
-    public function update(Request $request, FlightRoute $route): RedirectResponse
+    public function update(Request $request, Airport $airport): RedirectResponse
     {
         $validated = $request->validate([
-            'departure_airport_id' => ['required', 'exists:airports,id'],
-            'arrival_airport_id' => ['required', 'exists:airports,id', 'different:departure_airport_id'],
+            // 'unique:airports,code,' . $airport->id artinya: cek unique di tabel
+            // airports kolom code, TAPI kecualikan baris dengan id = $airport->id
+            // (baris itu sendiri) - tanpa ini, edit airport tanpa ubah kode akan
+            // selalu gagal validasi karena dianggap "sudah dipakai" oleh dirinya sendiri.
+            'code' => ['required', 'string', 'max:4', 'unique:airports,code,' . $airport->id],
+            'country' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $route->update($validated);
+        $airport->update($validated);
 
-        return redirect()->route('routes.index')->with('status', 'Rute berhasil diperbarui.');
+        return redirect()->route('airports.index')->with('status', 'Bandara berhasil diperbarui.');
     }
 
-    public function destroy(FlightRoute $route): RedirectResponse
+    public function destroy(Airport $airport): RedirectResponse
     {
-
-        if ($route->schedules()->exists()) {
-            return back()->withErrors(['route' => 'Rute masih dipakai oleh jadwal.']);
+        if ($airport->departureRoutes()->exists() || $airport->arrivalRoutes()->exists()) {
+            return back()->with('error', 'Bandara masih dipakai oleh rute, tidak bisa dihapus.');
         }
 
-        $route->delete();
+        $airport->delete();
 
-        return redirect()->route('routes.index')->with('status', 'Rute berhasil dihapus.');
+        return redirect()->route('airports.index')->with('status', 'Bandara berhasil dihapus.');
     }
 }

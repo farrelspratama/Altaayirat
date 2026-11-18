@@ -66,7 +66,7 @@ class AirlineController extends Controller
     {
 
         if ($airline->planes()->exists()) {
-            return back()->withErrors(['airline' => 'Maskapai masih memiliki pesawat.']);
+            return back()->with('error', 'Maskapai masih memiliki pesawat, tidak bisa dihapus.');
         }
 
         $airline->delete();

@@ -9,18 +9,6 @@
             </a>
         </div>
 
-        @if (session('status'))
-            <div class="mb-4 rounded-md bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3">
-                {{ session('status') }}
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="mb-4 rounded-md bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3">
-                {{ $errors->first() }}
-            </div>
-        @endif
-
         <div class="bg-white rounded-lg border border-stone-200 overflow-x-auto">
             <table class="w-full text-sm">
                 <thead class="bg-stone-50 text-xs uppercase text-stone-500">

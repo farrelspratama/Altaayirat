@@ -80,7 +80,7 @@ class PlaneController extends Controller
     public function destroy(Plane $plane): RedirectResponse
     {
         if ($plane->schedules()->exists()) {
-            return back()->withErrors(['plane' => 'Pesawat masih dipakai oleh jadwal.']);
+            return back()->with('error', 'Pesawat masih dipakai oleh jadwal, tidak bisa dihapus.');
         }
 
         $plane->delete();
@@ -111,7 +111,7 @@ class PlaneController extends Controller
         // sudah ada (apalagi sudah dipesan), generate ulang akan bentrok
         // dengan unique(plane_id, seat_number) dan berisiko merusak order.
         if ($plane->seats()->exists()) {
-            return back()->withErrors(['seats_economy' => 'Pesawat ini sudah memiliki kursi.']);
+            return back()->with('error', 'Pesawat ini sudah memiliki kursi.');
         }
 
         $validated = $request->validate($this->seatRules());

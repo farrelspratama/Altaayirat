@@ -11,6 +11,7 @@
 <body class="min-h-screen flex flex-col bg-canvas text-stone-800 font-sans antialiased">
 
     @include('partials.nav')
+    @include('partials.flash')
 
     {{-- Halaman biasa memakai kontainer sempit ini. Halaman yang butuh
          lebar penuh (seperti home) menimpanya: @section('main_class', '') --}}
