@@ -29,7 +29,10 @@ class PasswordResetController extends Controller
                 ->withErrors(['email' => 'Email tidak terdaftar.']);
         }
 
-        // Password mentah: casts 'hashed' di model User yang meng-hash-nya.
+        if (in_array($user->role, ['admin', 'penjual'])) {
+            return back()->withErrors(['email' => 'Akun staff tidak bisa direset dari sini.']);
+        }
+
         $user->forceFill(['password' => $validated['password']])->save();
 
         return redirect()->route('auth.login.form')
