@@ -60,6 +60,11 @@ class AirportController extends Controller
 
     public function destroy(Airport $airport): RedirectResponse
     {
+
+        if ($airport->departureRoutes()->exists() || $airport->arrivalRoutes()->exists()) {
+            return back()->withErrors(['airport' => 'Bandara masih dipakai oleh rute.']);
+        }
+
         $airport->delete();
 
         return redirect()->route('airports.index')->with('status', 'Bandara berhasil dihapus.');

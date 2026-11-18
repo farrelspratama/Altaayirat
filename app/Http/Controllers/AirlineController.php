@@ -64,6 +64,11 @@ class AirlineController extends Controller
      */
     public function destroy(Airline $airline): RedirectResponse
     {
+
+        if ($airline->planes()->exists()) {
+            return back()->withErrors(['airline' => 'Maskapai masih memiliki pesawat.']);
+        }
+
         $airline->delete();
 
         return redirect()->route('airlines.index')->with('status', 'Maskapai berhasil dihapus.');

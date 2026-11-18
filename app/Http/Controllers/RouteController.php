@@ -63,6 +63,11 @@ class RouteController extends Controller
 
     public function destroy(FlightRoute $route): RedirectResponse
     {
+
+        if ($route->schedules()->exists()) {
+            return back()->withErrors(['route' => 'Rute masih dipakai oleh jadwal.']);
+        }
+
         $route->delete();
 
         return redirect()->route('routes.index')->with('status', 'Rute berhasil dihapus.');
