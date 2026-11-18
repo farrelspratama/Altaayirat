@@ -12,8 +12,7 @@ use App\Http\Controllers\RouteController;
 use App\Http\Controllers\AdminScheduleController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome');
-Route::redirect('/', 'cari-pesawat');
+Route::view('/', 'home')->name('home');
 
 /*
 |--------------------------------------------------------------------------
