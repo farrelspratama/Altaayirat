@@ -1,4 +1,4 @@
-# Altaayirat — Sistem Pemesanan Tiket Pesawat
+# Altaayirat - Sistem Pemesanan Tiket Pesawat
 
 Aplikasi web pemesanan tiket pesawat berbasis **Laravel (Blade) + MySQL + Tailwind CSS**. Pengguna mencari jadwal, memilih kursi, memesan, lalu menerima e-tiket setelah pembayaran dikonfirmasi staff. Proyek ini adalah pembangunan ulang dari versi lama berbasis PHP native, dengan fokus pada keamanan, kode yang rapi, dan pengujian otomatis.
 
