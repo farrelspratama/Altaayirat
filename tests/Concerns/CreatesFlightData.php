@@ -7,10 +7,12 @@ use App\Models\Airport;
 use App\Models\FlightClass;
 use App\Models\Order;
 use App\Models\Passenger;
+use App\Models\Payment;
 use App\Models\Plane;
 use App\Models\Route as FlightRoute;
 use App\Models\Schedule;
 use App\Models\Seat;
+use App\Models\Ticket;
 use App\Models\User;
 
 /**
@@ -32,8 +34,20 @@ trait CreatesFlightData
         ], $attrs));
     }
 
-    protected function makeAirport(string $code): Airport
+    /**
+     * Kode bandara harus unik (kolom airports.code unique). Kalau tidak diberi,
+     * dibuat otomatis (AAA, AAB, AAC, ...) supaya satu tes boleh membuat
+     * beberapa rute atau order tanpa bentrok.
+     */
+    protected function makeAirport(?string $code = null): Airport
     {
+        static $n = 0;
+
+        if ($code === null) {
+            $code = chr(65 + intdiv($n, 676) % 26) . chr(65 + intdiv($n, 26) % 26) . chr(65 + $n % 26);
+            $n++;
+        }
+
         return Airport::create([
             'code' => $code,
             'country' => 'Indonesia',
@@ -64,8 +78,8 @@ trait CreatesFlightData
     protected function makeRoute(): FlightRoute
     {
         return FlightRoute::create([
-            'departure_airport_id' => $this->makeAirport('AAA')->id,
-            'arrival_airport_id' => $this->makeAirport('BBB')->id,
+            'departure_airport_id' => $this->makeAirport()->id,
+            'arrival_airport_id' => $this->makeAirport()->id,
         ]);
     }
 
@@ -100,5 +114,48 @@ trait CreatesFlightData
             'seat_id' => $seat->id,
             'order_date' => now(),
         ]);
+    }
+
+    protected function makePayment(Order $order, string $status = 'menunggu_konfirmasi'): Payment
+    {
+        return Payment::create(['order_id' => $order->id, 'status' => $status]);
+    }
+
+    protected function makeTicket(Payment $payment): Ticket
+    {
+        return Ticket::create([
+            'payment_id' => $payment->id,
+            'ticket_code' => 'TIX-' . strtoupper(uniqid()),
+        ]);
+    }
+
+    /** Order lengkap: jadwal + kursi + order + pembayaran (+ tiket kalau lunas). */
+    protected function makeFullOrder(User $owner, string $paymentStatus = 'menunggu_konfirmasi'): Order
+    {
+        $schedule = $this->makeSchedule();
+        $seat = $this->makeSeat($schedule->plane);
+        $seat->update(['status' => 'dipesan']);
+
+        $order = $this->makeOrder($owner, $schedule, $seat);
+        $payment = $this->makePayment($order, $paymentStatus);
+
+        if ($paymentStatus === 'lunas') {
+            $this->makeTicket($payment);
+        }
+
+        return $order;
+    }
+
+    /** Data form pemesanan yang valid; $overrides untuk mengubah satu-dua field. */
+    protected function bookingData(Seat $seat, array $overrides = []): array
+    {
+        return array_merge([
+            'seat_id' => $seat->id,
+            'full_name' => 'Budi Santoso',
+            'phone_number' => '081234567890',
+            'email' => 'budi@example.test',
+            'birth_date' => '1995-05-20',
+            'gender' => 'L',
+        ], $overrides);
     }
 }

@@ -43,6 +43,12 @@ class OrderController extends Controller
             // di versi lama sama sekali.
             $seat = Seat::lockForUpdate()->findOrFail($validated['seat_id']);
 
+            if ($seat->plane_id !== $schedule->plane_id) {
+                return back()->withErrors([
+                    'seat_id' => 'Kursi ini bukan milik pesawat pada jadwal yang dipilih.',
+                ]);
+            }
+
             if ($seat->status !== 'tersedia') {
                 return back()->withErrors([
                     'seat_id' => 'Kursi ini baru saja dipesan orang lain, silakan pilih kursi lain.'

@@ -6,6 +6,7 @@ use App\Models\Payment;
 use App\Models\Ticket;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class PaymentController extends Controller
@@ -29,20 +30,36 @@ class PaymentController extends Controller
 
     public function update(Request $request, Payment $payment): RedirectResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'status' => ['required', 'in:lunas,ditolak'],
         ]);
 
-        $payment->update([
-            'status' => $request->status,
-        ]);
+        // Status diperbarui dan tiket dibuat dalam satu transaksi: keduanya
+        // berhasil bersama atau batal bersama (tidak ada "lunas tanpa tiket").
+        $processed = DB::transaction(function () use ($payment, $validated) {
+            // Baca ulang baris ini DENGAN KUNCI. Kalau staff menekan tombol dua kali
+            // (atau dua staff menekan bersamaan), permintaan kedua menunggu di sini,
+            // lalu melihat status yang sudah berubah dan berhenti.
+            $locked = Payment::lockForUpdate()->findOrFail($payment->id);
 
-        // Kalau dikonfirmasi lunas, generate e-tiket otomatis di sini.
-        if ($request->status === 'lunas') {
-            Ticket::create([
-                'payment_id' => $payment->id,
-                'ticket_code' => 'TIX-' . strtoupper(uniqid()),
-            ]);
+            if ($locked->status !== 'menunggu_konfirmasi') {
+                return false;
+            }
+
+            $locked->update(['status' => $validated['status']]);
+
+            if ($validated['status'] === 'lunas') {
+                Ticket::create([
+                    'payment_id' => $locked->id,
+                    'ticket_code' => 'TIX-' . strtoupper(uniqid()),
+                ]);
+            }
+
+            return true;
+        });
+
+        if (! $processed) {
+            return back()->with('error', 'Pembayaran ini sudah diproses dan tidak bisa diubah lagi.');
         }
 
         return redirect()->route('payments.index')
